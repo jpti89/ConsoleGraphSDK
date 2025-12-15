@@ -2,18 +2,42 @@
 using ConsoleApp2.helpers;
 using ConsoleApp2.utils;
 
+/// <summary>
+/// Provides methods for interacting with Microsoft Graph resources, including user, SharePoint site, list, drive, and
+/// document set management using app-only authentication.
+/// </summary>
+/// <remarks>The GraphService class encapsulates common operations for working with Microsoft Graph in an
+/// application context, such as listing users, accessing SharePoint sites and lists, managing files and folders, and
+/// creating or updating columns and content types. All operations are performed using app-only authentication, and
+/// results are typically written to the console. This class is intended for scenarios where automated or administrative
+/// access to Microsoft 365 resources is required. Thread safety is not guaranteed; create separate instances if used
+/// concurrently.</remarks>
 public class GraphService
 {
+    /// <summary>
+    /// Initializes a new instance of the GraphService class using the specified settings.
+    /// </summary>
+    /// <param name="settings">The configuration settings used to initialize the graph service. Cannot be null.</param>
     public GraphService(Settings settings)
     {
         InitializeGraph(settings);
     }
 
+    /// <summary>
+    /// Initializes the Microsoft Graph client for application-only authentication using the specified settings.
+    /// </summary>
+    /// <param name="settings">The settings to use for configuring application-only authentication. Cannot be null.</param>
     private void InitializeGraph(Settings settings)
     {
         GraphHelper.InitializeGraphForAppOnlyAuth(settings);
     }
 
+    /// <summary>
+    /// Asynchronously retrieves and displays the app-only access token in the console output.
+    /// </summary>
+    /// <remarks>If an error occurs while retrieving the access token, the exception message is written to the
+    /// console output.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task DisplayAccessTokenAsync()
     {
         try
@@ -27,6 +51,14 @@ public class GraphService
         }
     }
 
+    /// <summary>
+    /// Asynchronously retrieves a list of users and writes their details to the console output.
+    /// </summary>
+    /// <remarks>This method outputs each user's display name, ID, and email address to the console. If no
+    /// users are found, a message is displayed. The method also indicates whether additional users are available for
+    /// retrieval. This method is intended for interactive or diagnostic scenarios where console output is
+    /// appropriate.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ListUsersAsync()
     {
         try
@@ -55,6 +87,13 @@ public class GraphService
         }
     }
 
+    /// <summary>
+    /// Retrieves and displays information about the root SharePoint site using Microsoft Graph.
+    /// </summary>
+    /// <remarks>This method writes the root site ID and web URL to the console if found. If no site is found
+    /// or an error occurs, a message is written to the console. This method is intended for interactive or diagnostic
+    /// scenarios where console output is appropriate.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ListSharepointRootSite()
     {
         try
@@ -79,6 +118,13 @@ public class GraphService
         }
     }
 
+    /// <summary>
+    /// Retrieves and displays a list of SharePoint sites and their associated lists to the console asynchronously.
+    /// </summary>
+    /// <remarks>This method writes the details of each SharePoint list, including its ID, name, and web URL,
+    /// to the console output. If no lists are found, a message is displayed indicating that no lists are available.
+    /// Errors encountered during the operation are written to the console.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ListSharepointListSites()
     {
         try
@@ -106,6 +152,14 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
+    
+    /// <summary>
+    /// Retrieves and displays a list of SharePoint drive sites to the console.
+    /// </summary>
+    /// <remarks>This method writes the details of each SharePoint drive site, including its ID, name, and web
+    /// URL, to the standard output. If no drives are found, a message is displayed indicating that no drives were
+    /// found. Errors encountered during retrieval are written to the console.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ListSharepointDriveSites()
     {
         try
@@ -133,6 +187,14 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Retrieves and displays a list of files from the SharePoint training drive to the console.
+    /// </summary>
+    /// <remarks>This method writes file details, including ID, name, URL, size, and type, to the standard
+    /// output. If no files are found, a message is displayed. Errors encountered during retrieval are written to the
+    /// console.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ListSPTrainingDriveFiles()
     {
         try
@@ -163,6 +225,14 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Asynchronously retrieves and displays the columns of the SharePoint training folder in the console.
+    /// </summary>
+    /// <remarks>This method writes the display names of the columns to the standard output. If no columns are
+    /// found, a message is displayed instead. Errors encountered during retrieval are also written to the console. This
+    /// method is intended for diagnostic or informational purposes and does not return data to the caller.</remarks>
+    /// <returns></returns>
     public async Task ListSPTrainingFolderColumns()
     {
         try
@@ -188,6 +258,14 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Lists the content types available in the SharePoint training folder and writes their details to the console.
+    /// </summary>
+    /// <remarks>This method retrieves content types from the SharePoint training folder using the Graph API
+    /// and outputs their name, group, and description to the console. If no content types are found, a message is
+    /// displayed. Errors encountered during the operation are written to the console.</remarks>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ListSPTrainingFolderContentTypes()
     {
         try
@@ -215,6 +293,16 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Retrieves and displays information about SharePoint training folder item types, including their content type
+    /// names and associated fields.
+    /// </summary>
+    /// <remarks>This method writes details about each item type in the SharePoint training folder to the
+    /// console. It is intended for diagnostic or informational purposes and does not return data to the caller. If no
+    /// items are found, a message is displayed to the console. Any errors encountered during retrieval are also written
+    /// to the console.</remarks>
+    /// <returns></returns>
     public async Task ListSPTrainingFolderItemTypes()
     {
         try
@@ -259,6 +347,17 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new choice column with the specified name and set of choices using the Microsoft Graph API.
+    /// </summary>
+    /// <remarks>If the column is created successfully, details about the new column and its choices are
+    /// written to the console. If the operation fails, an error message is displayed. This method does not throw
+    /// exceptions; errors are reported via console output.</remarks>
+    /// <param name="choiceColName">The name of the choice column to create. Cannot be null or empty.</param>
+    /// <param name="allChoices">A comma-separated list of choices to include in the column. Each choice will be trimmed of whitespace. Cannot be
+    /// null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedChoiceColumn(string choiceColName, string allChoices)
     {
         try
@@ -306,6 +405,15 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new number column with the specified name and displays its details to the console.
+    /// </summary>
+    /// <remarks>If the column is successfully created, detailed information about the column is written to
+    /// the console. If the creation fails or an error occurs, an appropriate message is displayed. This method is
+    /// intended for interactive or diagnostic scenarios where console output is appropriate.</remarks>
+    /// <param name="numberColName">The name to assign to the newly created number column. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedNumberColumn(string numberColName)
     {
         try
@@ -343,6 +451,15 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new currency column with the specified name and displays its details to the console.
+    /// </summary>
+    /// <remarks>If the column is successfully created, its details are written to the console. If creation
+    /// fails or an error occurs, an error message is displayed. This method is intended for interactive or diagnostic
+    /// scenarios where console output is appropriate.</remarks>
+    /// <param name="currencyColName">The name of the currency column to create. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedCurrencyColumn(string currencyColName)
     {
         try
@@ -377,6 +494,14 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new DateTime column with the specified name and outputs its details to the console.
+    /// </summary>
+    /// <remarks>If the column is successfully created, its properties are written to the console. If creation
+    /// fails or the column is not created, a message is displayed instead.</remarks>
+    /// <param name="dateTimeColName">The name of the DateTime column to create. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedDateTimeColumn(string dateTimeColName)
     {
         try
@@ -412,6 +537,14 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a lookup column with the specified name and displays its details to the console.
+    /// </summary>
+    /// <remarks>If the lookup column is created successfully, its properties and lookup options are written
+    /// to the console. If the creation fails or an error occurs, an error message is displayed.</remarks>
+    /// <param name="lookUpColName">The name of the lookup column to create. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedLookUpColumn(string lookUpColName)
     {
         try
@@ -449,6 +582,15 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new boolean column with the specified name and outputs its details to the console.
+    /// </summary>
+    /// <remarks>If the column is successfully created, its properties are written to the console. If creation
+    /// fails or an error occurs, an appropriate message is displayed. This method is intended for interactive or
+    /// diagnostic scenarios where console output is appropriate.</remarks>
+    /// <param name="boolColName">The name of the boolean column to create. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedBooleanColumn(string boolColName)
     {
         try
@@ -483,6 +625,15 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new Person or Group column with the specified name and displays its details to the console.
+    /// </summary>
+    /// <remarks>If the column is successfully created, detailed information about the column and its options
+    /// is written to the console. If creation fails or the column is not created, an error message is
+    /// displayed.</remarks>
+    /// <param name="pergroupColName">The name of the Person or Group column to create. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedPersonGroupColumn(string pergroupColName)
     {
         try
@@ -519,6 +670,14 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new hyperlink column with the specified name and displays its details to the console.
+    /// </summary>
+    /// <remarks>This method writes information about the created column to the console, including its
+    /// properties and hyperlink options. If the column creation fails, an error message is displayed.</remarks>
+    /// <param name="hyperlinkColName">The name to assign to the new hyperlink column. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedHyperlinkColumn(string hyperlinkColName)
     {
         try
@@ -553,6 +712,19 @@ public class GraphService
             Console.WriteLine($"Error creating column: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Creates a new custom content type with the specified name, description, and category.
+    /// </summary>
+    /// <remarks>This method outputs information about the created content type to the console. If the content
+    /// type cannot be created, an error message is displayed. This method does not return the created content type
+    /// object.</remarks>
+    /// <param name="contentName">The name of the custom content type to create. Cannot be null or empty.</param>
+    /// <param name="contentDescription">The description of the custom content type. This value provides additional details about the content type's
+    /// purpose.</param>
+    /// <param name="contentCategory">The category or group to which the custom content type belongs. Used to organize content types within the
+    /// system.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResultCreatedCustomContentType(string contentName, string contentDescription, string contentCategory)
     {
         try
@@ -585,6 +757,16 @@ public class GraphService
             Console.WriteLine($"Error creating Content Type: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Updates the name of a list item field in the drive by renaming the specified document.
+    /// </summary>
+    /// <remarks>If the specified document is not found, the method completes without making changes. This
+    /// method writes status and error messages to the console during execution.</remarks>
+    /// <param name="documentNameOld">The current name of the document to be updated. Cannot be null or empty.</param>
+    /// <param name="documentNameNew">The new name to assign to the document. Cannot be null or empty.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the drive item does not have a valid identifier.</exception>
     public async Task ResultUpdatedItemField(
         string documentNameOld,
         string documentNameNew)
@@ -622,6 +804,14 @@ public class GraphService
         }
     }
 
+    /// <summary>
+    /// Updates the value of a specified field in a document set identified by name.
+    /// </summary>
+    /// <param name="setName">The name of the document set whose field value will be updated. Cannot be null.</param>
+    /// <param name="fieldName">The name of the field within the document set to update. Cannot be null.</param>
+    /// <param name="newValue">The new value to assign to the specified field. May be null or empty depending on the field's requirements.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the document set's content type ID or document set ID is null.</exception>
     public async Task ResultUpdatedSetField(
         string setName,
         string fieldName,
@@ -670,7 +860,15 @@ public class GraphService
         }
     }
 
-
+    /// <summary>
+    /// Creates a new Document Set with the specified name and updates its metadata with the provided field value.
+    /// </summary>
+    /// <remarks>If the Document Set folder cannot be created or its information cannot be retrieved, the
+    /// method writes an error message to the console and returns without throwing an exception.</remarks>
+    /// <param name="documentSetName">The name of the Document Set to create. This value is used as the title and to identify the folder.</param>
+    /// <param name="commonFieldValue">The value to assign to the 'test' field in the Document Set's metadata.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the created Document Set folder item does not have a valid identifier.</exception>
     public async Task ResultCreatedDocumentSet(
         string documentSetName,
         string commonFieldValue)
@@ -718,7 +916,4 @@ public class GraphService
 
         Console.WriteLine("Document Set created!");
     }
-
-
 }
-
