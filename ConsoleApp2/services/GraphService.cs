@@ -637,8 +637,10 @@ public class GraphService
                 return;
             }
 
-            var documentSet = documentSets.FirstOrDefault(ds =>
-                ds.ContentType?.Name == setName);
+            var documentSet = documentSets.FirstOrDefault(f =>
+            f.Fields?.AdditionalData is { } data &&
+            data.TryGetValue("LinkFilename", out var value) &&
+            value?.ToString() == setName);
 
             if (documentSet is null)
             {

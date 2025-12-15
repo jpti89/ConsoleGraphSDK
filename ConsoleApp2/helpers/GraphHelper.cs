@@ -1,5 +1,4 @@
-﻿using Azure;
-using Azure.Core;
+﻿using Azure.Core;
 using Azure.Identity;
 using ConsoleApp2.config;
 using ConsoleApp2.utils;

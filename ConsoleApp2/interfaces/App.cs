@@ -107,14 +107,14 @@
                 case 2: await _graphService.ListSPTrainingFolderColumns(); break;
                 case 3: await ColumnCreationMenuAsync(); break;
                 case 4: await _graphService.ListSPTrainingFolderContentTypes(); break;
-                case 5:  
+                case 5:
                     string contentName = ReadRequiredString("Enter the name of the Content Type: ");
                     string contentDescription = ReadRequiredString("Enter a description for the Content Type: ");
                     string contentCategory = ReadRequiredString("Enter the name of the Content Type Category: ");
-                    await _graphService.ResultCreatedCustomContentType(contentName, contentDescription, contentCategory); 
+                    await _graphService.ResultCreatedCustomContentType(contentName, contentDescription, contentCategory);
                     break;
                 case 6: await _graphService.ListSPTrainingFolderItemTypes(); break;
-                case 7: 
+                case 7:
                     string newFolderName = ReadRequiredString("Enter the name of the new DocumentSet: ");
                     string commonFieldValue = ReadRequiredString("Enter it's default value on the common field: ");
                     await _graphService.ResultCreatedDocumentSet(newFolderName, commonFieldValue);
