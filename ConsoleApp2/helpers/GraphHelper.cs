@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
 using Azure.Identity;
 using ConsoleApp2.config;
 using ConsoleApp2.utils;
@@ -39,7 +40,7 @@ public class GraphHelper
         var response = await clientSecretCredential.GetTokenAsync(context);
         return response.Token;
     }
-    public static Task<UserCollectionResponse?> GetUsersAsync()
+    public static Task<Microsoft.Graph.Models.UserCollectionResponse?> GetUsersAsync()
     {
         _ = appClient ??
             throw new NullReferenceException("Graph has not been initialized for app-only auth");
@@ -53,7 +54,7 @@ public class GraphHelper
     }
 
 
-    public static async Task<Site?> GetSitesCallAsync()
+    public static async Task<Microsoft.Graph.Models.Site?> GetSitesCallAsync()
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -73,7 +74,7 @@ public class GraphHelper
         return site;
     }
 
-    public static async Task<List<List>> GetListsCallAsync()
+    public static async Task<List<Microsoft.Graph.Models.List>> GetListsCallAsync()
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -87,7 +88,7 @@ public class GraphHelper
 
         return response?.Value ?? new List<List>();
     }
-    public static async Task<List<Drive>> GetDrivesCallAsync()
+    public static async Task<List<Microsoft.Graph.Models.Drive>> GetDrivesCallAsync()
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -101,7 +102,7 @@ public class GraphHelper
 
         return response?.Value ?? new List<Drive>();
     }
-    public static async Task<List<DriveItem>> GetFilesInDriveAsync()
+    public static async Task<List<Microsoft.Graph.Models.DriveItem>> GetFilesInDriveAsync()
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -120,7 +121,7 @@ public class GraphHelper
 
         return response?.Value?.ToList() ?? new List<DriveItem>();
     }
-    public static async Task<List<ColumnDefinition>> GetDocsFolderColumns()
+    public static async Task<List<Microsoft.Graph.Models.ColumnDefinition>> GetDocsFolderColumns()
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -180,7 +181,7 @@ public class GraphHelper
                                           };
                                       });
 
-        return response?.Value?.ToList() ?? new List<ListItem>();
+        return response?.Value?.ToList() ?? new List<Microsoft.Graph.Models.ListItem>();
     }
 
     public static async Task<ColumnDefinition> CreateChoiceColumnAsync(string choiceColName, List<string> choiceList)
@@ -207,9 +208,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreateNumberColumnAsync(string numberColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreateNumberColumnAsync(string numberColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -233,9 +235,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreateCurrencyColumnAsync(string currencyColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreateCurrencyColumnAsync(string currencyColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -258,9 +261,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreateDateTimeColumnAsync(string dateTimeColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreateDateTimeColumnAsync(string dateTimeColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -284,9 +288,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreateLookUpColumnAsync(string lookUpColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreateLookUpColumnAsync(string lookUpColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -312,9 +317,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreateBooleanColumnAsync(string boolColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreateBooleanColumnAsync(string boolColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -336,9 +342,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreatePersonGroupColumnAsync(string pergroupColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreatePersonGroupColumnAsync(string pergroupColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -363,9 +370,10 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
-    public static async Task<ColumnDefinition> CreateHyperlinkColumnAsync(string hyperlinkColName)
+    public static async Task<Microsoft.Graph.Models.ColumnDefinition> CreateHyperlinkColumnAsync(string hyperlinkColName)
     {
         _ = appClient ?? throw new NullReferenceException(
             "Graph has not been initialized for app-only auth");
@@ -388,7 +396,8 @@ public class GraphHelper
                                       .Columns
                                       .PostAsync(column);
 
-        return response;
+        return response ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
     public static async Task<Microsoft.Graph.Models.ContentType> CreateCustomContentTypeAsync(string contentName,
                                                                                                 string contentDescription,
@@ -413,7 +422,8 @@ public class GraphHelper
                                                 .ContentTypes
                                                 .PostAsync(newContentType);
 
-        return createdContentType;
+        return createdContentType ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
     public static async Task<DriveItem> CreateDocumentSetFolderAsync(
     string documentSetName)
@@ -431,7 +441,8 @@ public class GraphHelper
         return await appClient
             .Drives[AppConstants.SPTrainingDriveId]
             .Items
-            .PostAsync(folder);
+            .PostAsync(folder) ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
     public static async Task UpdateListItemFieldAsync(string documentid, string documentNameNew)
     {
@@ -449,7 +460,7 @@ public class GraphHelper
                     .PatchAsync(updateItem);
     }
 
-    public static async Task<ListItem> UpdateDocumentSetFieldAsync(
+    public static async Task<Microsoft.Graph.Models.ListItem> UpdateDocumentSetFieldAsync(
                                             string documentSetId,
                                             string itemId,
                                             string fieldName,
@@ -478,15 +489,19 @@ public class GraphHelper
                                                 .Items[itemId]
                                                 .PatchAsync(updateItem);
 
-        return updatedListItem;
+        return updatedListItem ?? throw new InvalidOperationException(
+        "Graph API returned an Exception.");
     }
     public static async Task<ListItem> UpdateDocumentSetMetadataAsync(
         string itemId,
         string documentSetContentTypeId,
-        Dictionary<string, object> fields)
+        Dictionary<string, object?> fields)
     {
+        _ = appClient ?? throw new InvalidOperationException(
+            "Graph has not been initialized for app-only auth");
+
         fields["ContentTypeId"] = documentSetContentTypeId;
-        fields["Title"] = fields.ContainsKey("Title") ? fields["Title"] : null;
+        fields["Title"] = fields.TryGetValue("Title", out var title) ? title : null;
 
         var updateItem = new ListItem
         {
@@ -496,11 +511,14 @@ public class GraphHelper
             }
         };
 
-
-        return await appClient
+        var response = await appClient
             .Sites[AppConstants.SPTrainingSiteId]
             .Lists[AppConstants.SPTrainingDocumentsFolderId]
             .Items[itemId]
             .PatchAsync(updateItem);
+
+        return response ?? throw new InvalidOperationException(
+            "Graph API returned null when updating the list item.");
     }
+
 }

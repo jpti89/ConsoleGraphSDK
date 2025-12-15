@@ -1,9 +1,6 @@
 ﻿using ConsoleApp2.config;
 using ConsoleApp2.helpers;
 using ConsoleApp2.utils;
-using Microsoft.Graph.Models;
-using Microsoft.Graph.Models.TermStore;
-using System.Reflection.Metadata;
 
 public class GraphService
 {
@@ -228,17 +225,27 @@ public class GraphService
             {
                 foreach (var spContentTypes in contentTypes)
                 {
-                    string ctName = spContentTypes.ContentType?.Name;
+                    string? ctName = spContentTypes.ContentType?.Name;
+
                     Console.WriteLine("-------------------------");
                     Console.WriteLine($"Id: {spContentTypes.Id}");
                     Console.WriteLine($"WebURL: {spContentTypes.WebUrl}");
                     Console.WriteLine($"Content Type Name: {spContentTypes.ContentType?.Name}");
                     Console.WriteLine("Fields:");
-                    var fields = spContentTypes.Fields.AdditionalData;
-                    foreach (var kv in fields)
+                    var fields = spContentTypes.Fields?.AdditionalData;
+
+                    if (fields is null)
                     {
-                        Console.WriteLine($"    {kv.Key}: {kv.Value}");
+                        Console.WriteLine("No fields found.");
                     }
+                    else
+                    {
+                        foreach (var kv in fields)
+                        {
+                            Console.WriteLine($"    {kv.Key}: {kv.Value}");
+                        }
+                    }
+
                     Console.WriteLine("-------------------------");
                 }
             }
@@ -578,48 +585,78 @@ public class GraphService
             Console.WriteLine($"Error creating Content Type: {ex.Message}");
         }
     }
-    public async Task ResultUpdatedItemField(string documentNameOld, string documentNameNew)
+    public async Task ResultUpdatedItemField(
+        string documentNameOld,
+        string documentNameNew)
     {
         try
         {
             var files = await GraphHelper.GetFilesInDriveAsync();
+
+            if (files is null)
+            {
+                Console.WriteLine("No files returned from Graph.");
+                return;
+            }
+
             var file = files.FirstOrDefault(f => f.Name == documentNameOld);
 
-            if (file != null)
-            {
-                await GraphHelper.UpdateListItemFieldAsync(file.Id, documentNameNew);
-
-                Console.WriteLine("-------------------------");
-                Console.WriteLine("File renamed successfully!");
-                Console.WriteLine("-------------------------");
-            }
-            else
+            if (file is null)
             {
                 Console.WriteLine("No File with that name found.");
+                return;
             }
+
+            var fileId = file.Id
+                ?? throw new InvalidOperationException("Drive item Id is null.");
+
+            await GraphHelper.UpdateListItemFieldAsync(fileId, documentNameNew);
+
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("File renamed successfully!");
+            Console.WriteLine("-------------------------");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
-    public async Task ResultUpdatedSetField(string setName, string fieldName, string newValue)
+
+    public async Task ResultUpdatedSetField(
+        string setName,
+        string fieldName,
+        string newValue)
     {
         try
         {
-
             var documentSets = await GraphHelper.GetDocsFolderItemInfo();
-            var documentSet = documentSets.FirstOrDefault(f =>f.ContentType.Name == setName);
 
-            if (documentSet != null)
+            if (documentSets is null)
             {
-                var updatedItem = await GraphHelper.UpdateDocumentSetFieldAsync(documentSet.ContentType.Id, documentSet.Id, fieldName, newValue
-                );
+                Console.WriteLine("No document sets returned.");
+                return;
             }
-            else
+
+            var documentSet = documentSets.FirstOrDefault(ds =>
+                ds.ContentType?.Name == setName);
+
+            if (documentSet is null)
             {
                 Console.WriteLine("No Document Sets found with that name.");
+                return;
             }
+
+            var contentTypeId = documentSet.ContentType?.Id
+                ?? throw new InvalidOperationException("ContentType Id is null.");
+
+            var documentSetId = documentSet.Id
+                ?? throw new InvalidOperationException("DocumentSet Id is null.");
+
+            await GraphHelper.UpdateDocumentSetFieldAsync(
+                contentTypeId,
+                documentSetId,
+                fieldName,
+                newValue);
 
             Console.WriteLine("-------------------------");
             Console.WriteLine("Document Set Updated successfully!");
@@ -631,41 +668,55 @@ public class GraphService
         }
     }
 
+
     public async Task ResultCreatedDocumentSet(
         string documentSetName,
         string commonFieldValue)
     {
-        var fields = new Dictionary<string, object>
+        var fields = new Dictionary<string, object?>
     {
         { "Title", documentSetName },
         { "test", commonFieldValue }
     };
 
-        var folder = await GraphHelper.CreateDocumentSetFolderAsync(
-            documentSetName);
+        var folder = await GraphHelper.CreateDocumentSetFolderAsync(documentSetName);
+
+        if (folder is null)
+        {
+            Console.WriteLine("Failed to create Document Set folder.");
+            return;
+        }
 
         var folderInfo = await GraphHelper.GetDocsFolderItemInfo();
 
-        var folderId = folderInfo.FirstOrDefault(f =>
-                            f.Fields?.AdditionalData != null &&
-                            f.Fields.AdditionalData.TryGetValue("LinkFilename", out var value) &&
-                            value?.ToString() == documentSetName
-                        );
+        if (folderInfo is null)
+        {
+            Console.WriteLine("Could not retrieve folder information.");
+            return;
+        }
 
-        if (folderId != null)
+        var folderItem = folderInfo.FirstOrDefault(f =>
+            f.Fields?.AdditionalData is { } data &&
+            data.TryGetValue("LinkFilename", out var value) &&
+            value?.ToString() == documentSetName);
+
+        if (folderItem is null)
         {
-            var documentSet = await GraphHelper.UpdateDocumentSetMetadataAsync(
-                folderId.Id,
-                AppConstants.DocumentSetContentTypeId,
-                fields);
+            Console.WriteLine("There was a problem creating the Document Set!");
+            return;
         }
-        else
-        {
-            Console.WriteLine("There was a problem creating the DocumentSet!");
-        }
+
+        var folderItemId = folderItem.Id
+            ?? throw new InvalidOperationException("Folder item Id is null.");
+
+        await GraphHelper.UpdateDocumentSetMetadataAsync(
+            folderItemId,
+            AppConstants.DocumentSetContentTypeId,
+            fields);
 
         Console.WriteLine("Document Set created!");
     }
+
 
 }
 
