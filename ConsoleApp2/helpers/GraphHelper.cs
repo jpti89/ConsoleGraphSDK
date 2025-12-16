@@ -752,5 +752,4 @@ public class GraphHelper
         return response ?? throw new InvalidOperationException(
             "Graph API returned null when updating the list item.");
     }
-
 }
