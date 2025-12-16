@@ -292,7 +292,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -330,7 +330,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -368,7 +368,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -405,7 +405,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -444,7 +444,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -482,7 +482,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -518,7 +518,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -558,7 +558,7 @@ public class GraphHelper
 
         var column = new ColumnDefinition
         {
-            Description = "",
+            Description = "test",
             EnforceUniqueValues = false,
             Hidden = false,
             Indexed = false,
@@ -634,9 +634,7 @@ public class GraphHelper
             Name = documentSetName,
             Folder = new Folder(),
             AdditionalData = new Dictionary<string, object>
-        {
-            { "@microsoft.graph.conflictBehavior", "fail" }
-        }
+        {}
         };
 
         return await appClient
@@ -645,6 +643,7 @@ public class GraphHelper
             .PostAsync(folder) ?? throw new InvalidOperationException(
         "Graph API returned an Exception.");
     }
+
 
     /// <summary>
     /// Asynchronously updates the name of a list item in the specified SharePoint drive.

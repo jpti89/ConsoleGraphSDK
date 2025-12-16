@@ -152,7 +152,7 @@ public class GraphService
             Console.WriteLine($"Error getting lists: {ex.Message}");
         }
     }
-    
+
     /// <summary>
     /// Retrieves and displays a list of SharePoint drive sites to the console.
     /// </summary>
